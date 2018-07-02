@@ -1,0 +1,5 @@
+requests
+lxml
+python-dateutil
+cssselect
+bs4
