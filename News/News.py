@@ -74,8 +74,7 @@ def collectArticles(urls, source, args, filename):
         elif args.scrapeYear and dateParse(articleDate).year != int(args.scrapeYear):
             pass
         else:
-            # print(json.dumps(config))
-            pass
+            print(json.dumps(config))
     return False
 
 
@@ -137,8 +136,6 @@ def getArticleURLS(source, args):
                 urls.append(articleURL)
 
         # If there are less items in the results than the resultsPerPage param, we assume this is the last page
-        print(len(items))
-        print(scrapeconfig.resultsConfig(currentPage,args)[source]['resultsPerPage'])
         if (len(items) < scrapeconfig.resultsConfig(currentPage, args)[source]['resultsPerPage'] and currentPage > 1) or len(items) == 0:
             hasNextPage = False
 
