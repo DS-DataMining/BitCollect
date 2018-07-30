@@ -42,7 +42,6 @@ def parsedHTML(url):
 
 def collectArticles(urls, source, args, filename):
     # Loop over all the URLS that were collected in the parent function
-
     for url in urls:
 
         tree = parsedHTML(url)
@@ -71,11 +70,14 @@ def collectArticles(urls, source, args, filename):
         # article is < than the year you want to collect from (no point in continuing then)
         # if it does not match, don't write, if it's smaller, terminate
         if args.scrapeYear and dateParse(articleDate).year < int(args.scrapeYear):
-            break
+            return True
         elif args.scrapeYear and dateParse(articleDate).year != int(args.scrapeYear):
             pass
         else:
-            print(json.dumps(config))
+            # print(json.dumps(config))
+            pass
+    return False
+
 
 def getArticleURLS(source, args):
     # Create filename where everything is stored eventually. Doing str(int()) so the time is rounded off
@@ -84,20 +86,34 @@ def getArticleURLS(source, args):
     currentPage = 1
     hasNextPage = True
     outOfRange = False
-    while hasNextPage and not outOfRange:
+    shouldStop = False
+
+    illegal_string = ["", " ", "\n", "\t"]
+    keywords = ""
+
+    for key in args.keywords:
+        if key not in illegal_string:
+            if keywords == "":
+                keywords = str(key)
+            else:
+                keywords = keywords + "+" + str(key)
+
+    args.keywords = keywords
+
+    while hasNextPage and not outOfRange and not shouldStop:
         # Parse HTML, invoke config (x)paths
-        tree = parsedHTML(scrapeconfig.resultsConfig(currentPage)[source]['pageURL'])
-        items = tree.xpath(scrapeconfig.resultsConfig(currentPage)[source]['itemXpath'])
+        tree = parsedHTML(scrapeconfig.resultsConfig(currentPage, args)[source]['pageURL'])
+        items = tree.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['itemXpath'])
 
         # For every item on the search results page...
         for item in items:
             # Here we invoke the correct Xpaths from the config dict above
             # Not every results page correctly displays datetime in result, so if it's not here
             # do the check when fetching the articles. Else, if its ordered by date just terminate if the current article date is < the year youre scraping
-            if scrapeconfig.resultsConfig(currentPage)[source]['dateOnPage'] and \
-                    scrapeconfig.resultsConfig(currentPage)[source]['dateOrdered'] and args.scrapeYear:
+            if scrapeconfig.resultsConfig(currentPage, args)[source]['dateOnPage'] and \
+                    scrapeconfig.resultsConfig(currentPage, args)[source]['dateOrdered'] and args.scrapeYear:
                 articleDate = dateParse(
-                    item.xpath(scrapeconfig.resultsConfig(currentPage)[source]['dateXpath'])[0].get('datetime'))
+                    item.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['dateXpath'])[0].get('datetime'))
 
                 # If we already see that the article date is not from a year we want to collect (eg if from 2014 and 2015 was specified)
                 # then we just terminate the while loop. Only works one way, as articles are ordered by date, so can only do if smaller
@@ -105,11 +121,11 @@ def getArticleURLS(source, args):
                     outOfRange = True
                 # Note that it then just terminates on the next page (since there is no 'break' statement for the while loop)
 
-            articleURL = item.xpath(scrapeconfig.resultsConfig(currentPage)[source]['urlXpath'])[0].get('href')
+            articleURL = item.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['urlXpath'])[0].get('href')
 
             # Some websites have relative URL pointers.so prefix the base URL
             if '://' not in articleURL:
-                articleURL = scrapeconfig.resultsConfig(currentPage)[source]['baseURL'] + articleURL
+                articleURL = scrapeconfig.resultsConfig(currentPage,args)[source]['baseURL'] + articleURL
 
             # Urlfilter hack to prevent video/audio/gadfly pages from being visited (mostly bloomberg)
             # These pages have custom xpath structures, so not even bothering collecting them
@@ -121,15 +137,18 @@ def getArticleURLS(source, args):
                 urls.append(articleURL)
 
         # If there are less items in the results than the resultsPerPage param, we assume this is the last page
-        if len(items) < scrapeconfig.resultsConfig(currentPage)[source]['resultsPerPage']:
+        print(len(items))
+        print(scrapeconfig.resultsConfig(currentPage,args)[source]['resultsPerPage'])
+        if (len(items) < scrapeconfig.resultsConfig(currentPage, args)[source]['resultsPerPage'] and currentPage > 1) or len(items) == 0:
             hasNextPage = False
 
         # Increase page number by 1 for the next iteration of the while loop
         currentPage += 1
-
         # Once all URLs for the page have been collected, go visit the actual articles
         # Do this here so it doesn't first collect too many URLs that are useless afterwards
-        collectArticles(urls, source, args, filename)
+        shouldStop = collectArticles(urls, source, args, filename)
+        if shouldStop:
+            break
         # Reinitialize URLS array again for next loop
         urls = []
 

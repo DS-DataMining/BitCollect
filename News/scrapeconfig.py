@@ -6,6 +6,7 @@
 import sys
 import dateutil.parser
 
+
 def pageConfig(source, tree):
     # Sometimes a link is broken and it returns a 404, just checking page title
     # and returning a False for the config
@@ -50,7 +51,7 @@ def pageConfig(source, tree):
                   'articleText': " ".join(
                       str(paragraph.text_content()) for paragraph in tree.xpath('//div[@class="wsj-snippet-body"]/p')),
                   'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//span[@class="name"]')),
-                  'articleDate': tree.xpath('//time[@class="timestamp"]')[0].text}
+                  'articleDate': tree.xpath('//meta[@name="article.published"]')[0].get('content')}
 
     elif source == 'cnbc':
         config = {'articleTitle': tree.xpath('//h1[@class="title"]')[0].text,
@@ -64,14 +65,15 @@ def pageConfig(source, tree):
                   'articleText': " ".join(str(paragraph.text_content()) for paragraph in
                                           tree.xpath('//div[@class="article-content-container noskimwords"]/p')),
                   'articleAuthor': " & ".join(str(author.text_content()) for author in
-                                              tree.xpath('//a[@class="article-container-lab-name article-container-lab-name-last"]')),
+                                              tree.xpath(
+                                                  '//a[@class="article-container-lab-name article-container-lab-name-last"]')),
                   'articleDate': tree.xpath('//meta[@property="article:published_time"]')[1].get('content')}
     else:
         print("Exit")
         sys.exit('Source channel for this article not defined, check collectArticles() function')
 
     config['articleDate'] = dateutil.parser.parse(config['articleDate']).strftime(date_format)
-
+    # print(config)
     # Return it here instead of inside if-statement, will terminate before anyways if no config is found
     # print(config)
     return config
@@ -96,9 +98,15 @@ def pageConfig(source, tree):
 # '''
 
 
-def resultsConfig(currentPage):
+def resultsConfig(currentPage, args):
     # Split variabl assignment and return, otherwise the currentPage is undefined upon return
-    config = {'coindesk': {'pageURL': 'https://www.coindesk.com/page/' + str(currentPage) + '/?s=bitcoin',
+    illegal_string = ["", " ", "\n", "\t"]
+    shouldSetKeyword = False
+    if args.keywords and args.keywords not in illegal_string:
+        shouldSetKeyword = True
+
+    config = {'coindesk': {'pageURL': 'https://www.coindesk.com/page/' + str(currentPage) + '/?s=' + str(
+        args.keywords) if shouldSetKeyword else 'https://www.coindesk.com/page/' + str(currentPage),
                            'itemXpath': '//div[@class="post-info"]',
                            'urlXpath': './h3/a',
                            'dateOnPage': True,
@@ -128,7 +136,11 @@ def resultsConfig(currentPage):
                   'dateXpath': 'HERE'},
 
               'wsj': {
-                  'pageURL': 'https://www.wsj.com/search/term.html?KEYWORDS=Bitcoin&min-date=2010/07/24&max-date=2017/07/24&daysback=4y&isAdvanced=true&andor=AND&sort=date-desc&source=wsjarticle&page=' + str(
+                  'pageURL': 'https://www.wsj.com/search/term.html?KEYWORDS=' + str(
+                      args.keywords) + '&min-date=' + str(
+                      args.scrapeYear) + '/01/01&isAdvanced=true&daysback=4y&andor=OR&sort=date-desc&source=wsjarticle,wsjblogs,sitesearch,press,newswire&page=' + str(
+                      currentPage) if shouldSetKeyword else 'https://www.wsj.com/search/term.html?&min-date=' + str(
+                      args.scrapeYear) + '/01/01&isAdvanced=true&daysback=4y&andor=OR&sort=date-desc&source=wsjarticle,wsjblogs,sitesearch,press,newswire&page=' + str(
                       currentPage),
                   'itemXpath': '//div[@class="headline-container"]',
                   'urlXpath': './h3/a',
@@ -139,7 +151,9 @@ def resultsConfig(currentPage):
                   'dateXpath': './div[@class="article-info"]/ul/li/time[@class="date-stamp-container highlight"]'},
 
               'cnbc': {
-                  'pageURL': 'http://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=BITCOIN&sort=date&type=news&source=CNBC.com,The%20Reformed%20Broker,Buzzfeed,Estimize,Curbed,Polygon,Racked,Eater,SB%20Nation,Vox,The%20Verge,Recode,Breakingviews,NBC%20News,The%20Today%20Show,Fiscal%20Times,The%20New%20York%20Times,Financial%20Times,USA%20Today&assettype=partnerstory,blogpost,wirestory,cnbcnewsstory&pubtime=0&pubfreq=a&page=' + str(currentPage),
+                  'pageURL': 'http://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=' +
+                             args.keywords + '&sort=date&type=news&source=CNBC.com,The%20Reformed%20Broker,Buzzfeed,Estimize,Curbed,Polygon,Racked,Eater,SB%20Nation,Vox,The%20Verge,Recode,Breakingviews,NBC%20News,The%20Today%20Show,Fiscal%20Times,The%20New%20York%20Times,Financial%20Times,USA%20Today&assettype=partnerstory,blogpost,wirestory,cnbcnewsstory&pubtime=0&pubfreq=a&page=' + str(
+                      currentPage),
                   'itemXpath': '//div[@class="SearchResultCard"]',
                   'urlXpath': './h3/a',
                   'dateOnPage': False,
@@ -149,7 +163,9 @@ def resultsConfig(currentPage):
                   'dateXpath': './time'},
 
               'newsbitcoin': {
-                  'pageURL': 'https://news.bitcoin.com/page/' + str(currentPage) + '/?s=Bitcoin',
+                  'pageURL': 'https://news.bitcoin.com/page/' + str(currentPage) + '/?s=' + str(
+                      args.keywords) if shouldSetKeyword else 'https://news.bitcoin.com/page/' + str(
+                      currentPage) + '/?s=',
                   'itemXpath': '//div[@class="item-details"]',
                   # 'itemXpath': 'item-details',
                   'urlXpath': './h3/a',

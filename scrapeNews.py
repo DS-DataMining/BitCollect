@@ -7,12 +7,12 @@ if __name__ == '__main__':
 
     # Neat way of inputting CLI arguments
     parser = argparse.ArgumentParser(description='Scrape news articles')
+
     parser.add_argument("--year", dest="scrapeYear", required=False, help="Specify a specific year to collect from")
+    parser.add_argument('--keywords', nargs='+', dest="keywords", required=False)
     parser.add_argument('--sources', nargs='+', dest="sources", help='Set the news websites you want to collect from',
                         required=False)
     args = parser.parse_args()
-    print(args.scrapeYear)
-    print(args.sources)
 
     # Check if some sources are defined as input argument, otherwise just go over all
     allSources = ['coindesk', 'reuters', 'newsbitcoin', 'wsj', 'cnbc', 'bloomberg']
