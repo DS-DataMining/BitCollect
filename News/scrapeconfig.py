@@ -4,14 +4,18 @@
 # References parsed LXML tree, so just putting it in the loop for now
 # Need to do if statements, otherwise you'd get list index errors
 import sys
+import dateutil.parser
 
 def pageConfig(source, tree):
     # Sometimes a link is broken and it returns a 404, just checking page title
     # and returning a False for the config
     pageTitle = tree.find(".//title").text
     notFoundFilters = ['404', 'Not Found', 'Not found']
+
     if any(notFoundFilter in pageTitle for notFoundFilter in notFoundFilters):
         return False
+
+    date_format = "%Y-%m-%d %H:%M:%S"
 
     # In general, we find all paragraphs in the article body section, and then just merge them with join
     if source == 'newsbitcoin':
@@ -20,7 +24,8 @@ def pageConfig(source, tree):
                       str(paragraph.text_content()) for paragraph in tree.xpath('//div[@class="td-post-content"]/p')),
                   'articleAuthor': " & ".join(
                       str(author.text) for author in tree.xpath('//div[@class="td-post-author-name"]/a')),
-                  'articleDate': tree.xpath('//meta[@property="article:published_time"]')[0].get('content')}
+                  'articleDate': tree.xpath('//meta[@property="article:published_time"]')[0].get('content'),
+                  'articleViews': tree.xpath('//div[@class="td-post-views"]/span')[0].text}
     # Also doing the join for authors, as there might be more than one, or none at all
     elif source == 'bloomberg':
         config = {'articleTitle': tree.xpath('//h1[contains(@class, "__hed")]/span')[0].text,
@@ -51,21 +56,24 @@ def pageConfig(source, tree):
         config = {'articleTitle': tree.xpath('//h1[@class="title"]')[0].text,
                   'articleText': " ".join(
                       str(paragraph.text_content()) for paragraph in tree.xpath('//div[@itemprop="articleBody"]/p')),
-                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//span[@itemprop="name"]')),
+                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@itemprop="author"]/a')),
                   'articleDate': tree.xpath('//time[@class="datestamp"]')[0].get('datetime')}
 
     elif source == 'coindesk':
-        config = {'articleTitle': tree.xpath('//h3[@class="featured-article-title"]')[0].text,
+        config = {'articleTitle': tree.xpath('//h1[@class="article-top-title"]')[0].text,
                   'articleText': " ".join(str(paragraph.text_content()) for paragraph in
                                           tree.xpath('//div[@class="article-content-container noskimwords"]/p')),
-                  'articleAuthor': " & ".join(str(author.text) for author in
-                                              tree.xpath('//div[@class="article-meta"]/p[@class="timeauthor"]/a')),
-                  'articleDate': tree.xpath('//div[@class="article-meta"]/p[@class="timeauthor"]/time')[0].get(
-                      'datetime')}
+                  'articleAuthor': " & ".join(str(author.text_content()) for author in
+                                              tree.xpath('//a[@class="article-container-lab-name article-container-lab-name-last"]')),
+                  'articleDate': tree.xpath('//meta[@property="article:published_time"]')[1].get('content')}
     else:
+        print("Exit")
         sys.exit('Source channel for this article not defined, check collectArticles() function')
 
+    config['articleDate'] = dateutil.parser.parse(config['articleDate']).strftime(date_format)
+
     # Return it here instead of inside if-statement, will terminate before anyways if no config is found
+    # print(config)
     return config
 
 
@@ -131,9 +139,8 @@ def resultsConfig(currentPage):
                   'dateXpath': './div[@class="article-info"]/ul/li/time[@class="date-stamp-container highlight"]'},
 
               'cnbc': {
-                  'pageURL': 'http://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=BITCOIN&sort=date&type=news&source=CNBC.com,The%20Reformed%20Broker,Buzzfeed,Estimize,Curbed,Polygon,Racked,Eater,SB%20Nation,Vox,The%20Verge,Recode,Breakingviews,NBC%20News,The%20Today%20Show,Fiscal%20Times,The%20New%20York%20Times,Financial%20Times,USA%20Today&assettype=partnerstory,blogpost,wirestory,cnbcnewsstory&pubtime=0&pubfreq=a&page=' + str(
-                      currentPage),
-                  'itemXpath': '//div[@class="searchResultCard"]',
+                  'pageURL': 'http://search.cnbc.com/rs/search/view.html?partnerId=2000&keywords=BITCOIN&sort=date&type=news&source=CNBC.com,The%20Reformed%20Broker,Buzzfeed,Estimize,Curbed,Polygon,Racked,Eater,SB%20Nation,Vox,The%20Verge,Recode,Breakingviews,NBC%20News,The%20Today%20Show,Fiscal%20Times,The%20New%20York%20Times,Financial%20Times,USA%20Today&assettype=partnerstory,blogpost,wirestory,cnbcnewsstory&pubtime=0&pubfreq=a&page=' + str(currentPage),
+                  'itemXpath': '//div[@class="SearchResultCard"]',
                   'urlXpath': './h3/a',
                   'dateOnPage': False,
                   'dateOrdered': True,

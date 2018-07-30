@@ -9,7 +9,6 @@
 from . import scrapeconfig
 import re
 import requests
-import json
 from lxml import html
 from dateutil.parser import parse as dateParse
 import csv
@@ -17,6 +16,7 @@ import time
 import importlib
 import sys
 from bs4 import BeautifulSoup
+import json
 
 
 importlib.reload(sys)
@@ -42,16 +42,16 @@ def parsedHTML(url):
 
 def collectArticles(urls, source, args, filename):
     # Loop over all the URLS that were collected in the parent function
+
     for url in urls:
 
         tree = parsedHTML(url)
 
         # Initialize empty text string, add paragraphs when collected
         articleText = ""
-
+        print(url)
         # The function that is called here is from the scrapeconfig.py file (imported)
         # Have to pass the tree along with the source key, otherwise it cant access xpaths
-        print(url)
         config = scrapeconfig.pageConfig(source, tree)
 
         # If page was not found, continue to next URL
@@ -75,25 +75,20 @@ def collectArticles(urls, source, args, filename):
         elif args.scrapeYear and dateParse(articleDate).year != int(args.scrapeYear):
             pass
         else:
-            csvwriter = csv.writer(open(filename, "a"))
-            csvwriter.writerow([articleDate, articleTitle, articleAuthor, url, articleText])
-
+            print(json.dumps(config))
 
 def getArticleURLS(source, args):
     # Create filename where everything is stored eventually. Doing str(int()) so the time is rounded off
     filename = source + '_ARTICLES_' + str(int(time.time())) + '.csv'
     urls = []
     currentPage = 1
-    print(currentPage)
     hasNextPage = True
     outOfRange = False
     while hasNextPage and not outOfRange:
-        print('setting dict')
         # Parse HTML, invoke config (x)paths
         tree = parsedHTML(scrapeconfig.resultsConfig(currentPage)[source]['pageURL'])
         items = tree.xpath(scrapeconfig.resultsConfig(currentPage)[source]['itemXpath'])
 
-        # print('looping over items')
         # For every item on the search results page...
         for item in items:
             # Here we invoke the correct Xpaths from the config dict above
