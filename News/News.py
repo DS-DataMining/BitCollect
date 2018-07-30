@@ -60,12 +60,7 @@ def collectArticles(urls, source, args, filename):
         # Based on xpaths defined above, call correct selector for current source
         # Could just pass the config selectors to the array, but for the sake of cleanliness...
 
-        articleTitle = config['articleTitle']
-        articleText = config['articleText']
-        articleAuthor = config['articleAuthor']
-        # Storing it as a datetime object
         articleDate = config['articleDate']
-
         # Check against the year argument, terminate if it turns out the year for the current
         # article is < than the year you want to collect from (no point in continuing then)
         # if it does not match, don't write, if it's smaller, terminate
@@ -75,6 +70,7 @@ def collectArticles(urls, source, args, filename):
             pass
         else:
             print(json.dumps(config))
+            pass
     return False
 
 

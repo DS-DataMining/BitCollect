@@ -22,48 +22,57 @@ def pageConfig(source, tree):
     if source == 'newsbitcoin':
         config = {'articleTitle': tree.xpath('//h1[@class="entry-title"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.text_content()) for paragraph in tree.xpath('//div[@class="td-post-content"]/p')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@class="td-post-content"]//p')),
                   'articleAuthor': " & ".join(
-                      str(author.text) for author in tree.xpath('//div[@class="td-post-author-name"]/a')),
+                      str(author.text) for author in tree.xpath('//div[@class="td-post-author-name"]//a')),
                   'articleDate': tree.xpath('//meta[@property="article:published_time"]')[0].get('content'),
                   'articleViews': tree.xpath('//div[@class="td-post-views"]/span')[0].text}
-    # Also doing the join for authors, as there might be more than one, or none at all
+
     elif source == 'bloomberg':
         config = {'articleTitle': tree.xpath('//h1[contains(@class, "__hed")]/span')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.text_content()) for paragraph in tree.xpath('//div[@class="body-copy"]/p')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@class="body-copy"]//p')),
                   'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@class="author"]')),
                   'articleDate': tree.xpath('//time[@class="article-timestamp"]')[0].get('datetime')}
 
     # Reuters seems to append random chars to div classes, so use regexp 'contains' to bypass
     elif source == 'reuters':
         config = {'articleTitle': tree.xpath('//h1')[0].text,
-                  'articleText': " ".join(str(paragraph.text_content()) for paragraph in
-                                          tree.xpath('//div[contains(@class, "ArticleBody_body_")]/p')),
+                  'articleText': " ".join(str(paragraph.xpath("normalize-space(.)")) for paragraph in
+                                          tree.xpath('//div[contains(@class, "ArticleBody_body_")]//p')),
                   'articleAuthor': " & ".join(
-                      str(author.text) for author in tree.xpath('//p[contains(@class, "ArticleHeader_byline_")]/a')),
+                      str(author.text) for author in tree.xpath('//p[contains(@class, "ArticleHeader_byline_")]//a')),
                   'articleDate': tree.xpath('//div[contains(@class, "ArticleHeader_date_")]')[0].text}
 
     # NOTE: WSJ has a paywall - if you want the full article text, set the appropriate headers and cookies in parseHTML function (I don't have them)
     # For now, only the article snippet will be collected
     elif source == 'wsj':
+        paragrahs = tree.xpath('//div[@id="wsj-article-wrap"]//p')
+
+        if len(paragrahs) == 0:
+            paragrahs = tree.xpath('//div[@class="wsj-snippet-body"]//p')
+
+        author = " & ".join(str(author.get('content')) for author in tree.xpath('//meta[@name="author"]'))
+        if author == "":
+            author = "Wall Street Journal"
+
         config = {'articleTitle': tree.xpath('//h1[@class="wsj-article-headline"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.text_content()) for paragraph in tree.xpath('//div[@class="wsj-snippet-body"]/p')),
-                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//span[@class="name"]')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in paragrahs),
+                  'articleAuthor': author,
                   'articleDate': tree.xpath('//meta[@name="article.published"]')[0].get('content')}
 
     elif source == 'cnbc':
         config = {'articleTitle': tree.xpath('//h1[@class="title"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.text_content()) for paragraph in tree.xpath('//div[@itemprop="articleBody"]/p')),
-                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@itemprop="author"]/a')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@itemprop="articleBody"]//p')),
+                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@itemprop="author"]//a')),
                   'articleDate': tree.xpath('//time[@class="datestamp"]')[0].get('datetime')}
 
     elif source == 'coindesk':
         config = {'articleTitle': tree.xpath('//h1[@class="article-top-title"]')[0].text,
-                  'articleText': " ".join(str(paragraph.text_content()) for paragraph in
-                                          tree.xpath('//div[@class="article-content-container noskimwords"]/p')),
+                  'articleText': " ".join(str(paragraph.xpath("normalize-space(.)")) for paragraph in
+                                          tree.xpath('//div[@class="article-content-container noskimwords"]//p')),
                   'articleAuthor': " & ".join(str(author.text_content()) for author in
                                               tree.xpath(
                                                   '//a[@class="article-container-lab-name article-container-lab-name-last"]')),
