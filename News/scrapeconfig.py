@@ -90,9 +90,6 @@ def pageConfig(source, tree):
         sys.exit('Source channel for this article not defined, check collectArticles() function')
 
     config['articleDate'] = dateutil.parser.parse(config['articleDate']).strftime(date_format)
-    # print(config)
-    # Return it here instead of inside if-statement, will terminate before anyways if no config is found
-    # print(config)
     return config
 
 
