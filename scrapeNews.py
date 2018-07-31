@@ -2,8 +2,8 @@ import argparse
 import multiprocessing
 from News import News
 
-if __name__ == '__main__':
-# def main(argv):
+# if __name__ == '__main__':
+def main():
 
     # Neat way of inputting CLI arguments
     parser = argparse.ArgumentParser(description='Scrape news articles')
