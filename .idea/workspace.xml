@@ -20,8 +20,8 @@
       <file leaf-file-name="News.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/News/News.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="101" column="0" lean-forward="false" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
+            <state relative-caret-position="282">
+              <caret line="108" column="34" lean-forward="false" selection-start-line="108" selection-start-column="34" selection-end-line="108" selection-end-column="34" />
               <folding>
                 <element signature="e#386#412#0" expanded="true" />
               </folding>
@@ -42,8 +42,8 @@
       <file leaf-file-name="scrapeNews.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scrapeNews.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="140">
-              <caret line="10" column="47" lean-forward="false" selection-start-line="10" selection-start-column="47" selection-end-line="10" selection-end-column="47" />
+            <state relative-caret-position="294">
+              <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -76,10 +76,22 @@
       <file leaf-file-name="scrapeconfig.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/News/scrapeconfig.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="47" column="67" lean-forward="false" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
+            <state relative-caret-position="112">
+              <caret line="134" column="99" lean-forward="false" selection-start-line="134" selection-start-column="99" selection-end-line="134" selection-end-column="99" />
               <folding>
                 <element signature="e#356#366#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1050">
+              <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="14" />
+              <folding>
+                <element signature="e#42#85#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -123,8 +135,8 @@
       <find>json</find>
       <find>itemprop</find>
       <find>/</find>
-      <find>print</find>
       <find>meta</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -139,6 +151,7 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/scrapeNews.py" />
         <option value="$PROJECT_DIR$/News/News.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/News/scrapeconfig.py" />
       </list>
     </option>
@@ -426,16 +439,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/News/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14">
-          <caret line="1" column="26" lean-forward="false" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/env/lib/python3.5/site-packages/lxml/html/__init__.py" />
     <entry file="file://$PROJECT_DIR$/newsbitcoin_ARTICLES_1530536080.csv" />
     <entry file="file://$PROJECT_DIR$/newsbitcoin_ARTICLES_1532957639.csv">
@@ -462,10 +465,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1050">
+          <caret line="30" column="14" lean-forward="false" selection-start-line="30" selection-start-column="10" selection-end-line="30" selection-end-column="14" />
+          <folding>
+            <element signature="e#42#85#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/News/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14">
+          <caret line="1" column="26" lean-forward="false" selection-start-line="1" selection-start-column="26" selection-end-line="1" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scrapeNews.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="140">
-          <caret line="10" column="47" lean-forward="false" selection-start-line="10" selection-start-column="47" selection-end-line="10" selection-end-column="47" />
+        <state relative-caret-position="294">
+          <caret line="21" column="33" lean-forward="true" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
@@ -474,8 +497,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/News/News.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="101" column="0" lean-forward="false" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
+        <state relative-caret-position="282">
+          <caret line="108" column="34" lean-forward="false" selection-start-line="108" selection-start-column="34" selection-end-line="108" selection-end-column="34" />
           <folding>
             <element signature="e#386#412#0" expanded="true" />
           </folding>
@@ -484,8 +507,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/News/scrapeconfig.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="47" column="67" lean-forward="false" selection-start-line="47" selection-start-column="67" selection-end-line="47" selection-end-column="67" />
+        <state relative-caret-position="112">
+          <caret line="134" column="99" lean-forward="false" selection-start-line="134" selection-start-column="99" selection-end-line="134" selection-end-column="99" />
           <folding>
             <element signature="e#356#366#0" expanded="true" />
           </folding>

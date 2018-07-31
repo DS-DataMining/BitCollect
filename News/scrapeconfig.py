@@ -132,7 +132,7 @@ def resultsConfig(currentPage, args):
                            'resultsPerPage': 10,
                            'dateXpath': './p[@class="timeauthor"]/time'},
 
-              'bloomberg': {'pageURL': 'https://www.bloomberg.com/search?query=Bitcoin&page=' + str(currentPage),
+              'bloomberg': {'pageURL': 'https://www.bloomberg.com/search?query=' + args.keywords + '&page=' + str(currentPage),
                             'itemXpath': '//div[@class="search-result-story__container"]',
                             'urlXpath': './h1/a',
                             'dateOnPage': True,
