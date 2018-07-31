@@ -22,7 +22,8 @@ def pageConfig(source, tree):
     if source == 'newsbitcoin':
         config = {'articleTitle': tree.xpath('//h1[@class="entry-title"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@class="td-post-content"]//p')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in
+                      tree.xpath('//div[@class="td-post-content"]//p')),
                   'articleAuthor': " & ".join(
                       str(author.text) for author in tree.xpath('//div[@class="td-post-author-name"]//a')),
                   'articleDate': tree.xpath('//meta[@property="article:published_time"]')[0].get('content'),
@@ -31,18 +32,23 @@ def pageConfig(source, tree):
     elif source == 'bloomberg':
         config = {'articleTitle': tree.xpath('//h1[contains(@class, "__hed")]/span')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@class="body-copy"]//p')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in
+                      tree.xpath('//div[@class="body-copy"]//p')),
                   'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@class="author"]')),
                   'articleDate': tree.xpath('//time[@class="article-timestamp"]')[0].get('datetime')}
 
     # Reuters seems to append random chars to div classes, so use regexp 'contains' to bypass
     elif source == 'reuters':
+        authors = tree.xpath('//p[@class="BylineBar_byline"]')
+        if len(authors) == 0:
+            authors = tree.xpath('//div[@class="BylineBar_byline"]//a')
+
         config = {'articleTitle': tree.xpath('//h1')[0].text,
                   'articleText': " ".join(str(paragraph.xpath("normalize-space(.)")) for paragraph in
-                                          tree.xpath('//div[contains(@class, "ArticleBody_body_")]//p')),
+                                          tree.xpath('//div[@class="StandardArticleBody_body"]//p')),
                   'articleAuthor': " & ".join(
-                      str(author.text) for author in tree.xpath('//p[contains(@class, "ArticleHeader_byline_")]//a')),
-                  'articleDate': tree.xpath('//div[contains(@class, "ArticleHeader_date_")]')[0].text}
+                      str(author.text) for author in authors),
+                  'articleDate': tree.xpath('//meta[@name="analyticsAttributes.articleDate"]')[0].get('content')}
 
     # NOTE: WSJ has a paywall - if you want the full article text, set the appropriate headers and cookies in parseHTML function (I don't have them)
     # For now, only the article snippet will be collected
@@ -65,8 +71,10 @@ def pageConfig(source, tree):
     elif source == 'cnbc':
         config = {'articleTitle': tree.xpath('//h1[@class="title"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.xpath("normalize-space(.)")) for paragraph in tree.xpath('//div[@itemprop="articleBody"]//p')),
-                  'articleAuthor': " & ".join(str(author.text) for author in tree.xpath('//div[@itemprop="author"]//a')),
+                      str(paragraph.xpath("normalize-space(.)")) for paragraph in
+                      tree.xpath('//div[@itemprop="articleBody"]//p')),
+                  'articleAuthor': " & ".join(
+                      str(author.text) for author in tree.xpath('//div[@itemprop="author"]//a')),
                   'articleDate': tree.xpath('//time[@class="datestamp"]')[0].get('datetime')}
 
     elif source == 'coindesk':
@@ -134,7 +142,7 @@ def resultsConfig(currentPage, args):
                             'dateXpath': './div[@class="search-result-story__metadata"]/span[@class="metadata-timestamp"]/time'},
 
               'reuters': {
-                  'pageURL': 'http://www.reuters.com/search/news?blob=bitcoin&sortBy=date&dateRange=all&pn=' + str(
+                  'pageURL': 'http://www.reuters.com/search/news?blob=' + args.keywords + '&sortBy=date&dateRange=all&pn=' + str(
                       currentPage),
                   'itemXpath': '//div[@class="search-result-content"]',
                   'urlXpath': './h3/a',
@@ -184,4 +192,5 @@ def resultsConfig(currentPage, args):
                   'resultsPerPage': 10,
                   'dateXpath': './div[@class="td-module-meta-info"]/span/time'}
               }
+
     return config
