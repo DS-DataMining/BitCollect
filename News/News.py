@@ -7,15 +7,12 @@
 # Just make sure you set correct XPaths for the properties you want to collect 
 
 from . import scrapeconfig
-import re
 import requests
 from lxml import html
 from dateutil.parser import parse as dateParse
-import csv
 import time
 import importlib
 import sys
-from bs4 import BeautifulSoup
 import json
 
 
@@ -46,9 +43,8 @@ def collectArticles(urls, source, args, filename):
 
         tree = parsedHTML(url)
 
-        # Initialize empty text string, add paragraphs when collected
         articleText = ""
-        print(url)
+
         # The function that is called here is from the scrapeconfig.py file (imported)
         # Have to pass the tree along with the source key, otherwise it cant access xpaths
         config = scrapeconfig.pageConfig(source, tree)
@@ -70,7 +66,7 @@ def collectArticles(urls, source, args, filename):
             pass
         else:
             print(json.dumps(config))
-            pass
+            sys.stdout.flush()
     return False
 
 
