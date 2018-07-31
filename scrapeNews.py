@@ -2,7 +2,6 @@ import argparse
 import multiprocessing
 from News import News
 
-# if __name__ == '__main__':
 def main():
     try:
         # Neat way of inputting CLI arguments
@@ -14,7 +13,6 @@ def main():
                             required=False)
         args = parser.parse_args()
 
-        # Check if some sources are defined as input argument, otherwise just go over all
         allSources = ['coindesk', 'reuters', 'newsbitcoin', 'wsj', 'cnbc', 'bloomberg']
         if args.sources:
             visitSources = args.sources
@@ -23,7 +21,6 @@ def main():
 
         for source in visitSources:
             # Using multiprocessing to speed things up a little. Creates new process thread for every source channel o
-            # Calling getArticleURLS will also call child function that collects the actual articles
             p = multiprocessing.Process(target=News.getArticleURLS, args=(source, args))
             p.start()
     except Exception as argv:

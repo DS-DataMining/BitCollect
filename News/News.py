@@ -141,3 +141,5 @@ def getArticleURLS(source, args):
         # Reinitialize URLS array again for next loop
         urls = []
 
+    print(str(source), ": All done")
+    sys.stdout.flush()
