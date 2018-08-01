@@ -14,9 +14,14 @@ import time
 import importlib
 import sys
 import json
+import random
 
 results = []
 importlib.reload(sys)
+
+countRequested = 0
+lastReqTime = None
+
 
 def parsedHTML(url):
     # This function handles the web requests and parses the HTML into an lxml tree
@@ -31,7 +36,19 @@ def parsedHTML(url):
         'authority': 'news.bitcoin.com',
         'cookie': '__cfduid=d784026513c887ec39604c0f35333bb231500736652; PHPSESSID=el5c5j7a26njfvoe2dh6fnrer3; _ga=GA1.2.552908756.1500736659; _gid=GA1.2.2050113212.1500736659'
     }
+    global countRequested
+    global lastReqTime
+
+    if countRequested % 20 == 0 and lastReqTime is not None:
+        sleepTime = random.uniform(0.5,2)
+        if countRequested % 100 == 0:
+           sleepTime = sleepTime * 2
+        time.sleep(sleepTime)
+
+    lastReqTime = time.time()
+
     page = requests.get(url)
+    countRequested += 1
     # data = page.content.decode('UTF-8')
     tree = html.fromstring(page.text)
 
