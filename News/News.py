@@ -38,8 +38,10 @@ def parsedHTML(url):
     return tree
 
 
-def collectArticles(urls, source, args, filename):
+def collectArticles(urls, source, args, everyN):
     # Loop over all the URLS that were collected in the parent function
+    results = []
+    shouldStop = False
     for url in urls:
 
         tree = parsedHTML(url)
@@ -61,18 +63,29 @@ def collectArticles(urls, source, args, filename):
         # article is < than the year you want to collect from (no point in continuing then)
         # if it does not match, don't write, if it's smaller, terminate
         if args.scrapeYear and dateParse(articleDate).year < int(args.scrapeYear):
-            return True
+            shouldStop = True
         elif args.scrapeYear and dateParse(articleDate).year != int(args.scrapeYear):
             pass
         else:
-            print(json.dumps(config))
-            sys.stdout.flush()
-    return False
+            if len(results) > 0 and dateParse(articleDate).date() == dateParse(results[0]['articleDate']).date() or len(results) == 0:
+                results.append(config)
+                if everyN == len(results):
+                    print(json.dumps(results))
+                    sys.stdout.flush()
+                    results = []
+            else:
+                print(json.dumps(results))
+                sys.stdout.flush()
+                results = [config]
+
+    print(json.dumps(results))
+    sys.stdout.flush()
+    return shouldStop
 
 
 def getArticleURLS(source, args):
     # Create filename where everything is stored eventually. Doing str(int()) so the time is rounded off
-    filename = source + '_ARTICLES_' + str(int(time.time())) + '.csv'
+    everyN = args.everyN
     urls = []
     currentPage = 1
     hasNextPage = True
@@ -135,7 +148,7 @@ def getArticleURLS(source, args):
         currentPage += 1
         # Once all URLs for the page have been collected, go visit the actual articles
         # Do this here so it doesn't first collect too many URLs that are useless afterwards
-        shouldStop = collectArticles(urls, source, args, filename)
+        shouldStop = collectArticles(urls, source, args, everyN)
         if shouldStop:
             break
         # Reinitialize URLS array again for next loop

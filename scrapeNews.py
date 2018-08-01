@@ -6,6 +6,7 @@ def main():
     try:
         # Neat way of inputting CLI arguments
         parser = argparse.ArgumentParser(description='Scrape news articles')
+        parser.add_argument("--everyn", dest="everyN", required=False)
 
         parser.add_argument("--year", dest="scrapeYear", required=False, help="Specify a specific year to collect from")
         parser.add_argument('--keywords', nargs='+', dest="keywords", required=False)
