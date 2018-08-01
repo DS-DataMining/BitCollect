@@ -15,7 +15,7 @@ import importlib
 import sys
 import json
 
-
+results = []
 importlib.reload(sys)
 
 def parsedHTML(url):
@@ -37,11 +37,10 @@ def parsedHTML(url):
 
     return tree
 
-
-def collectArticles(urls, source, args, everyN):
+def collectArticles(urls, source, args, everyN, results):
     # Loop over all the URLS that were collected in the parent function
-    results = []
     shouldStop = False
+    print(everyN)
     for url in urls:
 
         tree = parsedHTML(url)
@@ -78,12 +77,11 @@ def collectArticles(urls, source, args, everyN):
                 sys.stdout.flush()
                 results = [config]
 
-    print(json.dumps(results))
-    sys.stdout.flush()
-    return shouldStop
+    return (shouldStop, results)
 
 
 def getArticleURLS(source, args):
+    results = []
     # Create filename where everything is stored eventually. Doing str(int()) so the time is rounded off
     everyN = args.everyN
     urls = []
@@ -148,11 +146,14 @@ def getArticleURLS(source, args):
         currentPage += 1
         # Once all URLs for the page have been collected, go visit the actual articles
         # Do this here so it doesn't first collect too many URLs that are useless afterwards
-        shouldStop = collectArticles(urls, source, args, everyN)
+        (shouldStop, results) = collectArticles(urls, source, args, everyN, results)
         if shouldStop:
             break
         # Reinitialize URLS array again for next loop
         urls = []
+
+    print(json.dumps(results))
+    sys.stdout.flush()
 
     print(str(source), ": All done")
     sys.stdout.flush()
