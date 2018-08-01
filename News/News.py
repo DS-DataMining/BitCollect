@@ -40,7 +40,6 @@ def parsedHTML(url):
 def collectArticles(urls, source, args, everyN, results):
     # Loop over all the URLS that were collected in the parent function
     shouldStop = False
-    print(everyN)
     for url in urls:
 
         tree = parsedHTML(url)
@@ -155,5 +154,5 @@ def getArticleURLS(source, args):
     print(json.dumps(results))
     sys.stdout.flush()
 
-    print(str(source), ": All done")
+    print("All done")
     sys.stdout.flush()
