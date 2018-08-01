@@ -5,6 +5,7 @@
 # Need to do if statements, otherwise you'd get list index errors
 import sys
 import dateutil.parser
+import re
 
 
 def pageConfig(source, tree):
@@ -22,8 +23,8 @@ def pageConfig(source, tree):
     if source == 'newsbitcoin':
         config = {'articleTitle': tree.xpath('//h1[@class="entry-title"]')[0].text,
                   'articleText': " ".join(
-                      str(paragraph.xpath("normalize-space(.)")) for paragraph in
-                      tree.xpath('//div[@class="td-post-content"]//p')),
+                      str(paragraph.xpath("normalize-space()")) for paragraph in
+                      tree.xpath('//div[@class="td-post-content"]//p[normalize-space()]')),
                   'articleAuthor': " & ".join(
                       str(author.text) for author in tree.xpath('//div[@class="td-post-author-name"]//a')),
                   'articleDate': tree.xpath('//meta[@property="article:published_time"]')[0].get('content'),
@@ -89,7 +90,16 @@ def pageConfig(source, tree):
         print("Exit")
         sys.exit('Source channel for this article not defined, check collectArticles() function')
 
+    config['articleText'] = config['articleText'].replace("“", '"')
+    config['articleText'] = config['articleText'].replace("”", '"')
+    config['articleText'] = config['articleText'].replace("’", "'")
+    config['articleText'] = config['articleText'].replace("\t", " ")
+    config['articleText'] = config['articleText'].replace("\n", " ")
+    # config['articleText'] = config['articleText'].strip()
+    config['articleText'] = config['articleText'].replace(u'\xa0', u' ')
+
     config['articleDate'] = dateutil.parser.parse(config['articleDate']).strftime(date_format)
+
     return config
 
 

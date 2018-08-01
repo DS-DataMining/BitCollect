@@ -32,7 +32,8 @@ def parsedHTML(url):
         'cookie': '__cfduid=d784026513c887ec39604c0f35333bb231500736652; PHPSESSID=el5c5j7a26njfvoe2dh6fnrer3; _ga=GA1.2.552908756.1500736659; _gid=GA1.2.2050113212.1500736659'
     }
     page = requests.get(url)
-    tree = html.fromstring(page.content)
+    # data = page.content.decode('UTF-8')
+    tree = html.fromstring(page.text)
 
     return tree
 
@@ -42,7 +43,6 @@ def collectArticles(urls, source, args, filename):
     for url in urls:
 
         tree = parsedHTML(url)
-
         articleText = ""
 
         # The function that is called here is from the scrapeconfig.py file (imported)
