@@ -137,7 +137,8 @@ def resultsConfig(currentPage, args):
                            'dateOrdered': True,
                            'baseURL': 'https://coindesk.com',
                            'resultsPerPage': 10,
-                           'dateXpath': './p[@class="timeauthor"]/time'},
+                           'dateXpath': './p[@class="timeauthor"]/time',
+                           'errorXpath': '//h1[@class="error404_title"]' },
 
               'bloomberg': {'pageURL': 'https://www.bloomberg.com/search?query=' + args.keywords + '&page=' + str(currentPage),
                             'itemXpath': '//div[@class="search-result-story__container"]',

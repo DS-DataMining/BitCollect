@@ -58,7 +58,6 @@ def collectArticles(urls, source, args, everyN, results):
     # Loop over all the URLS that were collected in the parent function
     shouldStop = False
     for url in urls:
-
         tree = parsedHTML(url)
         articleText = ""
 
@@ -122,6 +121,9 @@ def getArticleURLS(source, args):
         # Parse HTML, invoke config (x)paths
         tree = parsedHTML(scrapeconfig.resultsConfig(currentPage, args)[source]['pageURL'])
         items = tree.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['itemXpath'])
+        
+        if source == "coindesk" and len(tree.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['errorXpath'])) > 0:
+            items = []
 
         # For every item on the search results page...
         for item in items:
@@ -173,3 +175,4 @@ def getArticleURLS(source, args):
 
     print("All done")
     sys.stdout.flush()
+
