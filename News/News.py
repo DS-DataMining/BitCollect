@@ -121,7 +121,7 @@ def getArticleURLS(source, args):
         # Parse HTML, invoke config (x)paths
         tree = parsedHTML(scrapeconfig.resultsConfig(currentPage, args)[source]['pageURL'])
         items = tree.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['itemXpath'])
-        
+
         if source == "coindesk" and len(tree.xpath(scrapeconfig.resultsConfig(currentPage, args)[source]['errorXpath'])) > 0:
             items = []
 
@@ -157,7 +157,7 @@ def getArticleURLS(source, args):
                 urls.append(articleURL)
 
         # If there are less items in the results than the resultsPerPage param, we assume this is the last page
-        if (len(items) < scrapeconfig.resultsConfig(currentPage, args)[source]['resultsPerPage'] and currentPage > 1) or len(items) == 0:
+        if (len(items) < scrapeconfig.resultsConfig(currentPage, args)[source]['resultsPerPage'] and source != "coindesk") or len(items) == 0:
             hasNextPage = False
 
         # Increase page number by 1 for the next iteration of the while loop

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="68cb2830-32e6-403a-b10e-8418190e1430" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/News/News.py" afterPath="$PROJECT_DIR$/News/News.py" />
-      <change beforePath="$PROJECT_DIR$/News/scrapeconfig.py" afterPath="$PROJECT_DIR$/News/scrapeconfig.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/News/News.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="427">
-              <caret line="123" column="8" lean-forward="false" selection-start-line="123" selection-start-column="8" selection-end-line="123" selection-end-column="8" />
+              <caret line="159" column="110" lean-forward="false" selection-start-line="159" selection-start-column="110" selection-end-line="159" selection-end-column="110" />
               <folding>
                 <element signature="e#386#412#0" expanded="true" />
               </folding>
@@ -632,7 +630,7 @@
     <entry file="file://$PROJECT_DIR$/News/News.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="427">
-          <caret line="123" column="8" lean-forward="false" selection-start-line="123" selection-start-column="8" selection-end-line="123" selection-end-column="8" />
+          <caret line="159" column="110" lean-forward="false" selection-start-line="159" selection-start-column="110" selection-end-line="159" selection-end-column="110" />
           <folding>
             <element signature="e#386#412#0" expanded="true" />
           </folding>
